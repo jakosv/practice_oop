@@ -43,13 +43,128 @@ class Tree {
 private:
     Node* root;
 
+    void smallTurnLeft(Node* a, Node* b) {
+        if (a->parent) {
+            a->parent->right = b;
+        }
+        b->parent = a->parent;
+        a->parent = b;
+        if (b->left) {
+            b->left->parent = a;
+            a->right = b->left;
+        }
+        b->left = a;
+    }
+
+    void smallTurnRight(Node* a, Node* b) {
+        if (a->parent) {
+            a->parent->right = b;
+        }
+        b->parent = a->parent;
+        a->parent = b;
+        if (b->right) {
+            b->right->parent = a;
+            a->left = b->right;
+        }
+        b->right = a;
+    }
+
+    void bigTurnRight(Node* a, Node* b, Node* c) {
+        smallTurnRight(b, c);
+        smallTurnLeft(a, c);
+    }
+
+    void bigTurnLeft(Node* a, Node* b, Node* c) {
+        smallTurnLeft(b, c);
+        smallTurnRight(a, c);
+    }
+
 public:
     Node* getRoot() { return root; }
     const Node* getRoot() const { return root; }
 
     Tree() : root(nullptr);
 
-    Node* addNode(const std::string& name) {}
+    int getHeight(const Node* node) {
+        if (node == nullptr) {
+            return 0;
+        }
+        int left = 0, right = 0;
+        if (node->left) {
+            left = getHeight(node->left) + 1;
+        }
+        if (node->right) {
+            right = getHeight(node->right) + 1;
+        }
+        return left + right;
+    }
+
+    bool isBalancedTree(const Node* node) {
+        int left, right;
+        while (node) {
+            left = getHeight(node->left);
+            right = getHeight(node->right);
+            if (abs(left - right) > 2) {
+                return false;  
+            }
+        }
+        return true;
+    }
+    
+    void balancingTree(Node* node) {
+        int leftHeight = getHeight(node->left);
+        int rightHeight = getHeight(node->right); 
+        Node* a = node;
+        if (leftHeight > rightHeight) {
+            node = node->left;
+            leftHeight = getHeight(node->left);
+            rightHeight = getHeight(node->right);
+            if (leftHeight > rightHeight) {
+                smallTurnRight(node->parent, node);
+            }
+            else {
+                bigTurnLeft(node->parent, node, node->right);
+            }
+        }
+        else {
+            node = node->right;
+            leftHeight = getHeight(node->left);
+            rightHeight = getHeight(node->right);
+            if (leftHeight < rightHeight) {
+                smallTurnLeft(node->parent, node);
+            }
+            else {
+                bigTurnRight(node->parent, node, node->left);
+            }
+        }
+    }
+
+    Node* addNode(const std::string& name) {
+        Node* closest = findClosest(name);
+        if (closest && closest->name == name) {
+            return nullptr;
+        }
+        Node* newNode = new Node(name, closest);
+        if (closest == nullptr) {
+            Node* maxNode = findMax;
+            if (maxNode == nullptr) {
+                root = newNode;        
+                return root;
+            }
+            newNode->parent = maxNode;
+            maxNode->right = newNode;
+        }
+        else {
+            if (closest->left) {
+                closest->left->parent = newNode;
+            }
+            closes->left = newNode;
+            newNode->parent = closest;
+        }
+        if (!isBalancedTree(newNode->parent)) {
+            balancingTree(newNode->parent);
+        }
+    }
 
     Node* findNode(const std::string& name) {
         for (auto node = root; node;) {
@@ -71,15 +186,10 @@ public:
         for (auto node = root; node;) {
             auto res = name.compare(node->name);
             if (res == 0) {
-                if (node->right != nullptr)
-                    return node->right;
-                else
-                    return ans;
+                return node;
             }
             if (res < 0) {
-                if (node->right != nullptr) {
-                    ans = node->right;
-                }
+                ans = node;
                 node = node->left;
             }
             else {
