@@ -63,17 +63,14 @@ public:
                 pos = pos * 2 + 1;
                 pos = findLeftmost(pos);
             }
-            else if (pos % 2 == 1) {
-                pos = findFirstEvenAncestor(pos);
-                if (pos == 1) {
-                    pos = v->size() + 1;
-                    v = nullptr;
-                }
-                else {
-                    pos /= 2;
-                }
-            }
             else {
+                if (pos % 2 == 1) {
+                    pos = findFirstEvenAncestor(pos);
+                    if (pos == 1) {
+                        pos = v->size() + 1;
+                        v = nullptr;
+                    }
+                }
                 pos /= 2;
             }
             idx = pos - 1;
