@@ -26,18 +26,53 @@ public:
         return true;
     }
 
+    size_t findElement(const T& o) {
+        for (size_t i = 0; i < v.size(); i++) {
+            if (v[i] == o) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     bool removeNode(const T& o) {
+        size_t pos = findElement(o);
+        if (pos == -1) {
+            return false;
+        }
+        v[pos] = v.back();   
+        v.pop_back();
+        size_t parent_pos = (pos - 1) / 2;
+        while (pos > 0 && v[pos] > v[parent_pos]) {
+            std::swap(v[pos], v[parent_pos]);
+            pos = parent_pos; 
+            parent_pos = (pos - 1) / 2;
+        }
+        size_t left_child_pos = (pos * 2 + 1);
+        size_t right_child_pos = (pos * 2 + 2);
+        while (right_child_pos < v.size() && 
+                (v[pos] < v[left_child_pos]) || v[pos] < v[right_child_pos])
+        {
+            if (v[left_child_pos] >= v[right_child_pos]) {
+                std::swap(v[pos], v[left_child_pos]); 
+                pos = left_child_pos;
+            }
+            else {
+                std::swap(v[pos], v[right_child_pos]);
+                pos = right_child_pos;
+            }
+            left_child_pos = (pos * 2 + 1);
+            right_child_pos = (pos * 2 + 2);
+        }
+        if (left_child_pos < v.size() && v[pos] < v[left_child_pos]) {
+            std::swap(v[pos], v[left_child_pos]);
+        }
         return true;
     }
 
     class iterator {
         std::vector<T>* v;
         size_t idx;
-
-    public:
-        iterator() : v(nullptr) {}
-        iterator(std::vector<T>* v_, size_t idx_) : v(v_), idx(idx_) {}
 
         size_t findLeftmost(size_t pos) {
             while (pos * 2 <= v->size()) {
@@ -56,7 +91,11 @@ public:
         bool hasRight(size_t pos) {
             return (pos * 2 + 1 <= v->size());
         }
-        
+
+    public:
+        iterator() : v(nullptr) {}
+        iterator(std::vector<T>* v_, size_t idx_) : v(v_), idx(idx_) {}
+
         iterator& operator++() {
             size_t pos = idx + 1;
             if (hasRight(pos)) {
@@ -66,12 +105,14 @@ public:
             else {
                 if (pos % 2 == 1) {
                     pos = findFirstEvenAncestor(pos);
-                    if (pos == 1) {
-                        pos = v->size() + 1;
-                        v = nullptr;
-                    }
                 }
-                pos /= 2;
+                if (pos == 1) {
+                    pos = v->size() + 1;
+                    v = nullptr;
+                }
+                else {
+                    pos /= 2;
+                }
             }
             idx = pos - 1;
             return *this;
@@ -150,6 +191,29 @@ bool testHeapIterator(const std::vector<T>& initial,
     }
     return true;
 }
+
+template<class T>
+bool testHeapRemove(const std::vector<T>& initial, const T& value,
+        const std::vector<T>& expected) 
+{
+    HeapOverArray<T> heap(initial);
+    heap.removeNode(value);
+    auto v = heap.getVector();
+    if (v.size() != expected.size()) {
+        std::cerr << "size difference: expected " << expected.size() << 
+            ", got " << v.size() << std::endl;
+        return false; 
+    }
+    for (size_t i = 0; i < expected.size(); i++) {
+        if (v[i] != expected[i]) {
+            std::cerr << "diffecrence in " << i << ": expected " << 
+                expected[i] << ", got " << v[i] << std::endl;
+            return false;
+        }
+    }
+    return true;
+}
+
 int main() {
     std::vector<int> initial = {7, 3, 4};
     std::vector<int> expected = {8, 7, 4, 3};
@@ -158,5 +222,9 @@ int main() {
     initial = {100, 70, 60, 25, 10, 40, 5, 8, 2, 9, 1, 3};
     expected = {8, 25, 2, 70, 9, 10, 1, 100, 3, 40, 60, 5};
     testHeapIterator(initial, expected);
+
+    initial = {100, 70, 60, 25, 10, 40, 5, 8, 2, 9, 1, 3};
+    expected = {100, 25, 60, 8, 10, 40, 5, 3, 2, 9, 1};
+    testHeapRemove(initial, 70, expected);
     return 0;
 }
