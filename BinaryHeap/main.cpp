@@ -59,12 +59,12 @@ public:
         
         iterator& operator++() {
             size_t pos = idx + 1;
-            if (pos % 2 == 1) {
-                if (hasRight(pos)) {
-                    pos = pos * 2 + 1;
-                    pos = findLeftmost(pos);
-                }
-                else {
+            if (hasRight(pos)) {
+                pos = pos * 2 + 1;
+                pos = findLeftmost(pos);
+            }
+            else {
+                if (pos % 2 == 1) {
                     pos = findFirstEvenAncestor(pos);
                     if (pos == 1) {
                         pos = v->size() + 1;
@@ -73,12 +73,6 @@ public:
                     else {
                         pos /= 2;
                     }
-                }
-            }
-            else {
-                if (hasRight(pos)) {
-                    pos = pos * 2 + 1;
-                    pos = findLeftmost(pos);
                 }
                 else {
                     pos /= 2;
