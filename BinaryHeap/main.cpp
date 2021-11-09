@@ -101,6 +101,9 @@ public:
     };
 
     iterator begin() {
+        if (v.empty()) {
+            return iterator();
+        }
         size_t idx = 0;
         while (idx * 2 < v.size()) {
             idx = idx * 2 + 1;
