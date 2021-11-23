@@ -22,8 +22,8 @@ extern "C" float shortest_length(graph& g, const std::string& src,
             for (auto& e : it->second) {
                 string u = e.first;
                 float w = e.second;
-                if (dist[u] < INF) {
-                    dist[v] = min(dist[v], dist[u] + w);
+                if (dist[v] < INF) {
+                    dist[u] = min(dist[u], dist[v] + w);
                 }
             }
         }
