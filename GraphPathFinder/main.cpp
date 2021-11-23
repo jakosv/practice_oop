@@ -15,7 +15,6 @@ graph build_graph(const std::istream& is) {
         float k;
         cin >> v >> w >> k;
         g[v].emplace_back(w, k);
-        g[w].emplace_back(v, k);
     }
     return g;
 }
