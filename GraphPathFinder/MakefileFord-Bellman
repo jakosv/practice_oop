@@ -1,0 +1,11 @@
+CC=g++
+CFLAGS=-std=c++11
+SOURCE=main.cpp
+PROGNAME=GraphPathFinder
+LIBNAME=ford-bellman
+LIBPATH=/home/jakos/practice_oop/GraphPathFinder/Ford-Bellman/
+
+.PHONY: all clean
+
+all:
+	$(CC) $(SOURCE) -o $(PROGNAME) -L$(LIBPATH) -l$(LIBNAME)
