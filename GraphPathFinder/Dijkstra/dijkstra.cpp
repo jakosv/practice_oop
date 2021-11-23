@@ -1,14 +1,16 @@
 #include "../common.h"
 #include "../../BinaryHeap/binaryHeap.h"
+
 #include <iostream>
 #include <map>
+#include <cfloat>
 
 using namespace std;
 
 extern "C" float shortest_length(graph& g, const std::string& src,
         const std::string& dst)
 {
-    const float INF = 1e9;
+    const float INF = FLT_MAX;
     HeapOverArray<pair<float, string>> heap;
     map<string, float> dist;
     for (auto it = g.begin(); it != g.end(); it++) {

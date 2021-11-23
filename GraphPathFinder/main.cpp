@@ -6,16 +6,15 @@
 
 using namespace std;
 
-graph build_graph(const std::istream& is) {
+graph build_graph(std::istream& is) {
     graph g;
-    int n, m;
-    cin >> n >> m;
+    int m;
+    is >> m;
     for (int i = 0; i < m; i++) {
         string v, w;
         float k;
-        cin >> v >> w >> k;
+        is >> v >> w >> k;
         g[v][w] = k;
-        g[w][v] = k;
     }
     return g;
 }

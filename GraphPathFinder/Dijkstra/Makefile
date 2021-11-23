@@ -1,5 +1,5 @@
-CC=g++
-CFLAGS=-std=c++11
+CXX=c++
+CXXFLAGS=-std=c++11
 SOURCE=dijkstra.cpp
 LIBNAME=libdijkstra.so
 
@@ -8,11 +8,10 @@ LIBNAME=libdijkstra.so
 all: $(LIBNAME)
 
 $(LIBNAME): dynamic.o
-	$(CC) -shared dynamic.o -o $(LIBNAME)
-	rm *.o
+	$(CXX) -shared dynamic.o -o $(LIBNAME)
 
 dynamic.o:
-	$(CC) -fPIC -c $(SOURCE) -o dynamic.o 
+	$(CXX) -fPIC -c $(SOURCE) -o dynamic.o $(CXXFLAGS)
 
 clean:
 	rm *.o *.so

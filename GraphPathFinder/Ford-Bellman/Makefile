@@ -1,18 +1,17 @@
-CC=g++
-CFLAGS=-std=c++11
+CXX=c++
+CXXFLAGS=-std=c++11
 SOURCE=ford-bellman.cpp
 LIBNAME=libford-bellman.so
 
-.PHONY: all
+.PHONY: all clean
 
 all: $(LIBNAME)
 
 $(LIBNAME): dynamic.o
-	$(CC) -shared dynamic.o -o $(LIBNAME)
-	rm *.o
+	$(CXX) -shared dynamic.o -o $(LIBNAME)
 
 dynamic.o:
-	$(CC) -fPIC -c $(SOURCE) -o dynamic.o 
+	$(CXX) -fPIC -c $(SOURCE) -o dynamic.o $(CXXFLAGS)
 
 clean:
 	rm *.o *.so

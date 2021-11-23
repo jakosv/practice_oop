@@ -1,15 +1,15 @@
 #include "../common.h"
 
-#include <vector>
 #include <string>
 #include <map>
+#include <cfloat>
 
 using namespace std;
 
 extern "C" float shortest_length(graph& g, const std::string& src, 
         const std::string& dst)
 {
-    const int INF = 1e9;
+    const float INF = FLT_MAX;
     map<string, float> dist;
     for (auto it = g.begin(); it != g.end(); it++) {
         dist[it->first] = INF;
