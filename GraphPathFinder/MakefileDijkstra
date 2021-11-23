@@ -3,7 +3,7 @@ CFLAGS=-std=c++11
 SOURCE=main.cpp
 PROGNAME=GraphPathFinder
 LIBNAME=dijkstra
-LIBPATH=/home/jakos/practice_oop/GraphPathFinder/dijkstra/
+LIBPATH=/home/jakos/practice_oop/GraphPathFinder/Dijkstra/
 
 .PHONY: all clean
 
